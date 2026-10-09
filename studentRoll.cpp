@@ -6,20 +6,42 @@ StudentRoll::StudentRoll() {
 }
 
 void StudentRoll::insertAtTail(const Student &s) {
-  // STUB
+  Node *n = new Node;
+  n->s = new Student(s);         // deep copy via Student's copy constructor
+  n->next = NULL;
+  if (tail == NULL) {
+    head = tail = n;
+  } else {
+    tail->next = n;
+    tail = n;
+  }
 }
 
 std::string StudentRoll::toString() const {
-  return "stub";
+  std::string result = "[";
+  for (Node *p = head; p != NULL; p = p->next) {
+    result += p->s->toString();
+    if (p->next != NULL)
+      result += ",";
+  }
+  result += "]";
+  return result;
 }
 
 StudentRoll::StudentRoll(const StudentRoll &orig) {
-  // STUB
   head = tail = NULL;
+  for (Node *p = orig.head; p != NULL; p = p->next)
+    insertAtTail(*(p->s));
 }
 
 StudentRoll::~StudentRoll() {
-  // STUB
+  while (head != NULL) {
+    Node *next = head->next;
+    delete head->s;
+    delete head;
+    head = next;
+  }
+  tail = NULL;
 }
 
 StudentRoll & StudentRoll::operator =(const StudentRoll &right ) {
@@ -30,17 +52,21 @@ StudentRoll & StudentRoll::operator =(const StudentRoll &right ) {
   if (&right == this) 
     return (*this);
 
-  // TODO... Here is where there is code missing that you need to 
-  // fill in...
+  // free the current list
+  while (head != NULL) {
+    Node *next = head->next;
+    delete head->s;
+    delete head;
+    head = next;
+  }
+  tail = NULL;
 
+  // deep copy the other list
+  for (Node *p = right.head; p != NULL; p = p->next)
+    insertAtTail(*(p->s));
 
   // KEEP THE CODE BELOW THIS LINE
   // Overloaded = should end with this line, despite what the textbook says.
   return (*this); 
   
 }
-
-
-
-
-
